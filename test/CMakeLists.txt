@@ -6,7 +6,6 @@ FetchContent_Declare(googletest
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
-enable_testing()
 include(GoogleTest)
 
 add_executable(yall_test yall_test.cpp)

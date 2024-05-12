@@ -21,6 +21,7 @@ target_compile_options(yall
 add_subdirectory(apps)
 
 if(${BUILD_YALL_TESTS})
+  enable_testing()
   include(FetchContent)
   add_subdirectory(test)
 endif()

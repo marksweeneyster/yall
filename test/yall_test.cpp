@@ -8,7 +8,7 @@ TEST(YallTest, FrontPushPop) {
 
   std::iota(test_arr, test_arr+sz, 0);
 
-  yall::Yall<int> dlist;
+  yall::Yall<int&> dlist;
   EXPECT_FALSE(dlist.front_val().has_value());
   EXPECT_TRUE(dlist.empty());
 
@@ -34,7 +34,7 @@ TEST(YallTest, RemoveFirst) {
 
   std::iota(test_arr, test_arr+sz, -999.0);
 
-  yall::Yall<double> dlist;
+  yall::Yall<double&> dlist;
 
   // index of to be removed
   constexpr size_t rmv_indx = sz/3;
@@ -66,7 +66,7 @@ TEST(YallTest, RemoveLast) {
 
   std::iota(test_arr, test_arr+sz, -999.0);
 
-  yall::Yall<double> dlist;
+  yall::Yall<double&> dlist;
 
   // index of to be removed
   constexpr size_t rmv_indx = sz/3;
@@ -112,7 +112,7 @@ TEST(YallTest, Reset) {
 
   std::iota(test_arr, test_arr+sz, 0);
 
-  yall::Yall<unsigned long> dlist;
+  yall::Yall<unsigned long&> dlist;
   EXPECT_FALSE(dlist.front_val().has_value());
   EXPECT_FALSE(dlist.back_val().has_value());
 

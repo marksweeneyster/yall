@@ -20,6 +20,15 @@ Testing is enabled by default, to disable:
 > mkdir .build && cd .build
 > cmake .. -DBUILD_YALL_TESTS=0
 ```
+Otherwise
+```
+> mkdir .build && cd .build
+> cmake .. 
+> make -j10
+> ctest
+> # or
+> ./test/yall_test
+```
 
 ## the reference question
 "Each node should contain a reference to application data." The linked-list I wrote does fulfill this requirement if the 

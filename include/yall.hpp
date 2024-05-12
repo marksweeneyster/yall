@@ -16,7 +16,7 @@ namespace yall {
   //!* \tparam T The type of the node data.
   template<typename T>
   class Yall final {
-    /* if "T" is a reference type. get the base type */
+    /* getter functions further below require a non-reference type  */
     using DecayT = typename std::decay<T>::type;
 
     struct Node {
@@ -127,6 +127,28 @@ namespace yall {
       return {};
     }
 
+    //! Get the value at the front of the list
+    //! \param ref Output
+    //! \return true if the list is not-empty and the reference has been assigned
+    bool front(T& ref) const {
+      if (head) {
+        ref = head->data;
+        return true;
+      }
+      return false;
+    }
+
+    //! Get the value at the back of the list
+    //! \param ref Output
+    //! \return true if the list is not-empty and the reference has been assigned
+    bool back(T& ref) const {
+      if (tail) {
+        ref = tail->data;
+        return true;
+      }
+      return false;
+    }
+
     //! Start from the front of the list, find the first match, and remove it.
     //! \param match_val
     //! \return true if the value was found and removed, otherwise false
@@ -173,7 +195,6 @@ namespace yall {
               pop_front();
               return true;
             }
-            //
             auto prev_node = ptr->prev;
             auto next_node = ptr->next;
             ptr.reset();
@@ -188,6 +209,7 @@ namespace yall {
     }
 
     using PrinterCB = std::function<void(const T&)>;
+
     //! Print the values in the list, front-to-back.
     //!
     //! \param printer_cb callback that will print node data to stdout
@@ -197,7 +219,7 @@ namespace yall {
         printer_cb(ptr->data);
         ptr = ptr->next;
       }
-      std::cout << "|-\n";// list "null-terminator"
+      std::cout << "|-\n";// list display "null-terminator"
     }
 
     //! Free all nodes (create an empty list).

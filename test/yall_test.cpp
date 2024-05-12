@@ -12,8 +12,8 @@ TEST(YallTest, FrontPushPop) {
   EXPECT_FALSE(dlist.front_val().has_value());
   EXPECT_TRUE(dlist.empty());
 
-  for (auto i=0; i<sz; ++i) {
-    dlist.push_front(test_arr[i]);
+  for (auto& val : test_arr) {
+    dlist.push_front(val);
   }
   EXPECT_FALSE(dlist.empty());
 
@@ -41,8 +41,8 @@ TEST(YallTest, RemoveFirst) {
   // test with empty list
   EXPECT_FALSE(dlist.remove_first(test_arr[rmv_indx]));
 
-  for (auto i=0; i<sz; ++i) {
-    dlist.push_front(test_arr[i]);
+  for (auto& val : test_arr) {
+    dlist.push_front(val);
   }
 
   EXPECT_TRUE(dlist.remove_first(test_arr[rmv_indx]));
@@ -73,8 +73,8 @@ TEST(YallTest, RemoveLast) {
   // test with empty list
   EXPECT_FALSE(dlist.remove_last(test_arr[rmv_indx]));
 
-  for (auto i=0; i<sz; ++i) {
-    dlist.push_front(test_arr[i]);
+  for (auto& val : test_arr) {
+    dlist.push_front(val);
   }
 
   EXPECT_TRUE(dlist.remove_last(test_arr[rmv_indx]));
@@ -94,11 +94,11 @@ TEST(YallTest, RemoveLast) {
   dlist.reset();
   double test_val = 3.14;
 
-  for (auto i=0; i<sz; ++i) {
+  for (auto i=0UL; i<sz; ++i) {
     dlist.push_front(test_val);
   }
 
-  for (auto i=0; i<sz; ++i) {
+  for (auto i=0UL; i<sz; ++i) {
     EXPECT_TRUE(dlist.remove_last(test_val));
   }
   // list should be empty
@@ -116,8 +116,8 @@ TEST(YallTest, Reset) {
   EXPECT_FALSE(dlist.front_val().has_value());
   EXPECT_FALSE(dlist.back_val().has_value());
 
-  for (auto i=0; i<sz; ++i) {
-    dlist.push_back(test_arr[i]);
+  for (auto& val : test_arr) {
+    dlist.push_back(val);
   }
   EXPECT_TRUE(dlist.front_val().has_value());
   EXPECT_TRUE(dlist.back_val().has_value());

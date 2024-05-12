@@ -112,17 +112,66 @@ TEST(YallTest, Reset) {
 
   std::iota(test_arr, test_arr+sz, 0);
 
-  yall::Yall<unsigned long&> dlist;
-  EXPECT_FALSE(dlist.front_val().has_value());
-  EXPECT_FALSE(dlist.back_val().has_value());
+  yall::Yall<unsigned long&> ul_list;
+  EXPECT_FALSE(ul_list.front_val().has_value());
+  EXPECT_FALSE(ul_list.back_val().has_value());
 
   for (auto& val : test_arr) {
-    dlist.push_back(val);
+    ul_list.push_back(val);
   }
-  EXPECT_TRUE(dlist.front_val().has_value());
-  EXPECT_TRUE(dlist.back_val().has_value());
+  EXPECT_TRUE(ul_list.front_val().has_value());
+  EXPECT_TRUE(ul_list.back_val().has_value());
 
-  dlist.reset();
-  EXPECT_FALSE(dlist.front_val().has_value());
-  EXPECT_FALSE(dlist.back_val().has_value());
+  ul_list.reset();
+  EXPECT_FALSE(ul_list.front_val().has_value());
+  EXPECT_FALSE(ul_list.back_val().has_value());
+}
+
+TEST(YallTest, FrontBack) {
+  class Clazz {
+    int data;
+  public:
+    explicit Clazz(int n) : data(n) {}
+    int get() const {return data;}
+  };
+
+  Clazz obj1(1);
+  Clazz obj2(7);
+  Clazz obj3(9);
+  Clazz obj4(2);
+
+  yall::Yall<Clazz&> ll_nc;
+  ll_nc.push_back(obj1);
+  ll_nc.push_back(obj2);
+  ll_nc.push_back(obj3);
+
+  EXPECT_TRUE(ll_nc.front(obj4));
+  EXPECT_EQ(obj4.get(), obj1.get());
+  ll_nc.pop_front();
+
+  EXPECT_TRUE(ll_nc.front(obj4));
+  EXPECT_EQ(obj4.get(), obj2.get());
+  ll_nc.pop_front();
+
+  EXPECT_TRUE(ll_nc.front(obj4));
+  EXPECT_EQ(obj4.get(), obj3.get());
+  ll_nc.pop_front();
+
+  EXPECT_TRUE(ll_nc.empty());
+
+  ll_nc.push_back(obj1);
+  ll_nc.push_back(obj2);
+  ll_nc.push_back(obj3);
+
+  EXPECT_TRUE(ll_nc.back(obj4));
+  EXPECT_EQ(obj4.get(), obj3.get());
+  ll_nc.pop_back();
+
+  EXPECT_TRUE(ll_nc.back(obj4));
+  EXPECT_EQ(obj4.get(), obj2.get());
+  ll_nc.pop_back();
+
+  EXPECT_TRUE(ll_nc.back(obj4));
+  EXPECT_EQ(obj4.get(), obj1.get());
+  ll_nc.pop_back();
 }

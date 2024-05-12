@@ -23,7 +23,7 @@ Testing is enabled by default, to disable:
 
 ## apps
 There are two executables in the `apps` subfolder. The first one, `yall_app1`, uses value data types in the linked list.
-The second one, `yall_app2`, uses reference data types (e.g. `double&` rather than `double`).
+The second one, `yall_app2`, uses reference data types (for example, `double&` rather than `double`).
 The Google test libraries don't play nice with sanitizer compile flags and the linked-list library is header only.
 So these apps are aimed at exercising the API and running executables with the address sanitizer enabled.
 This has been tested on windows, MSVC 19.39, and linux with gcc 10.5.
@@ -36,4 +36,4 @@ The cmake default os to not build with the address sanitizer enabled. To enable:
 >
 > ./apps/yall_app2
 ```
-You should run these apps in a terminal to see the proper output.
+You should run these apps in a terminal to see the proper output (running in an IDE may not show sanitizer output).

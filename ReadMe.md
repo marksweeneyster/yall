@@ -21,12 +21,21 @@ Testing is enabled by default, to disable:
 > cmake .. -DBUILD_YALL_TESTS=0
 ```
 
+## the reference question
+"Each node should contain a reference to application data." The linked-list I wrote does fulfill this requirement if the 
+client code specifies that it's using a container of references:
+```cpp
+yall::Yall<double&> ll_dref;
+yall::Yall<double> ll_d;     // node data will contain copies of the client data
+```
+There are life-time issues when the node data is a reference to client data but all unit-tests use reference types. 
+
 ## apps
 There are two executables in the `apps` subfolder. The first one, `yall_app1`, uses value data types in the linked list.
 The second one, `yall_app2`, uses reference data types (for example, `double&` rather than `double`).
 The Google test libraries don't play nice with sanitizer compile flags and the linked-list library is header only.
 So these apps are aimed at exercising the API and running executables with the address sanitizer enabled.
-This has been tested on windows, MSVC 19.39, and linux with gcc 10.5.
+This has been tested on windows with MSVC 19.39, and linux with gcc 10.5.
 The cmake default os to not build with the address sanitizer enabled. To enable:
 ``` 
 > mkdir .build && cd .build

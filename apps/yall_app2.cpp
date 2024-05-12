@@ -7,9 +7,9 @@ int main() {
   fn_a<double&>(ll_dref);
   ll_dref.print(dbl_printer);
 
-  Yall<Fubar&> ll_fubref;
-  fn_b<Fubar&>(ll_fubref);
-  ll_fubref.print(fubar_printer);
+  Yall<Foo&> ll_foo_ref;
+  fn_b<Foo&>(ll_foo_ref);
+  ll_foo_ref.print(foo_printer);
 
   return 0;
 }

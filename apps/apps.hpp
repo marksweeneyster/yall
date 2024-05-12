@@ -19,27 +19,27 @@ namespace yall {
     llist.push_front(d3);
   }
 
-  struct Fubar {
-    Fubar(std::string nm="fubar", int id_=42) : name(nm), id(id_) {}
+  struct Foo {
+    Foo(std::string nm="foo", int id_=42) : name(nm), id(id_) {}
     std::string name;
     int id;
   };
 
-  std::ostream& operator<<(std::ostream& os, const Fubar& p) {
+  std::ostream& operator<<(std::ostream& os, const Foo& p) {
     return os << "name: \"" << p.name << "\", id: " << p.id;
   }
 
-  auto fubar_printer = [](const yall::Fubar& fub) {
-    std::cout << fub << " <--> ";
+  auto foo_printer = [](const yall::Foo& foo) {
+    std::cout << foo << " <--> ";
   };
 
   template<typename T>
   void fn_b(Yall<T>& llist) {
-    yall::Fubar fubar1;
-    yall::Fubar fubar2("gubar", 7);
+    yall::Foo foo1;
+    yall::Foo foo2("goo", 7);
 
-    llist.push_front(fubar1);
-    llist.push_back(fubar2);
+    llist.push_front(foo1);
+    llist.push_back(foo2);
   }
 };
 #endif//YALL_APPS_APPS_HPP

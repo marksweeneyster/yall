@@ -30,7 +30,7 @@ This has been tested on windows, MSVC 19.39, and linux with gcc 10.5.
 The cmake default os to not build with the address sanitizer enabled. To enable:
 ``` 
 > mkdir .build && cd .build
-> cmake .. -DSANITIZE_YALL_APPS=0
+> cmake .. -DSANITIZE_YALL_APPS=1
 > make -j10
 > ./apps/yall_app1
 >

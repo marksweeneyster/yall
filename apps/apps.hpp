@@ -3,6 +3,7 @@
 
 #include "yall.hpp"
 #include <iostream>
+#include <utility>
 
 namespace yall {
 
@@ -20,7 +21,7 @@ namespace yall {
   }
 
   struct Foo {
-    Foo(std::string nm="foo", int id_=42) : name(nm), id(id_) {}
+    explicit Foo(std::string nm="foo", int id_=42) : name(std::move(nm)), id(id_) {}
     std::string name;
     int id;
   };
@@ -41,5 +42,5 @@ namespace yall {
     llist.push_front(foo1);
     llist.push_back(foo2);
   }
-};
+}
 #endif//YALL_APPS_APPS_HPP

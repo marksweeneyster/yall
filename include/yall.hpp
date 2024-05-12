@@ -16,14 +16,12 @@ namespace yall {
   //!* \tparam T The type of the node data.
   template<typename T>
   class Yall final {
-    /* in particular, if "T" is a reference type. get the base type */
+    /* if "T" is a reference type. get the base type */
     using DecayT = typename std::decay<T>::type;
 
     struct Node {
       explicit Node(const T& data_) : data(data_) {}
-      //~Node() { std::cout << "dtor: " << data << std::endl; }
 
-      // "Each node should contain a reference to application data"
       const T data;
       std::shared_ptr<Node> prev;
       std::shared_ptr<Node> next;

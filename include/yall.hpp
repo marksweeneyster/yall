@@ -23,23 +23,15 @@ namespace yall {
       explicit Node(const T& data_) : data(data_) {}
 
       const T data;
-      std::shared_ptr<Node> prev;
+      std::weak_ptr<Node> prev;
       std::shared_ptr<Node> next;
     };
     using NodePtr = std::shared_ptr<Node>;
 
   public:
-    Yall() = default;
+    Yall()  = default;
+    ~Yall() = default;
 
-    ~Yall() {
-      /* Since "prev" and "next" are shared_ptrs I need to explicitly free up
-       * any allocated nodes due to circular references.
-       * I tested with weak_ptrs but had the opposite problem, ref counts
-       * going to zero too soon.
-       */
-      reset();
-    }
-    /* since I have a custom destructor follow the rule-of-five */
     Yall(const Yall&)            = delete;
     Yall(Yall&&)                 = delete;
     Yall& operator=(const Yall&) = delete;
@@ -50,13 +42,8 @@ namespace yall {
     void push_front(const T& data) {
       auto node_ptr = std::make_shared<Node>(data);
       if (head) {
-        if (head == tail) {
-          tail->prev     = node_ptr;
-          node_ptr->next = tail;
-        } else {
-          node_ptr->next = head;
-          head->prev     = node_ptr;
-        }
+        node_ptr->next = head;
+        head->prev     = node_ptr;
         head = node_ptr;
       } else {
         head = node_ptr;
@@ -68,14 +55,9 @@ namespace yall {
     //! \param data node value
     void push_back(const T& data) {
       auto node_ptr = std::make_shared<Node>(data);
-      if (tail) {
-        if (head == tail) {
-          head->next     = node_ptr;
-          node_ptr->prev = head;
-        } else {
-          node_ptr->prev = tail;
-          tail->next     = node_ptr;
-        }
+      if (auto old_tail = tail.lock()) {
+        node_ptr->prev = old_tail;
+        old_tail->next = node_ptr;
         tail = node_ptr;
       } else {
         head = node_ptr;
@@ -87,21 +69,27 @@ namespace yall {
     void pop_front() {
       if (head) {
         auto new_head = head->next;
-        if (new_head && new_head->prev) {
-          new_head->prev.reset();
+        if (new_head) {
+          head.reset();
+          head = new_head;
+        } else {
+          head.reset();
+          tail.reset();
         }
-        head = new_head;
       }
     }
 
     //! Removes the last element in the linked list.
     void pop_back() {
-      if (tail) {
-        auto new_tail = tail->prev;
-        if (new_tail && new_tail->next) {
+      if (auto old_tail = tail.lock()) {
+        auto new_tail = old_tail->prev.lock();
+        if (new_tail) {
           new_tail->next.reset();
+          tail = new_tail;
+        } else {
+          head.reset();
+          tail.reset();
         }
-        tail = new_tail;
       }
     }
 
@@ -120,8 +108,8 @@ namespace yall {
     //!
     //! \return a copy of the value at the back of the list, or none.
     std::optional<DecayT> back_val() const {
-      if (tail) {
-        DecayT val = tail->data;
+      if (auto sp = tail.lock()) {
+        DecayT val = sp->data;
         return val;
       }
       return {};
@@ -142,8 +130,8 @@ namespace yall {
     //! \param ref Output
     //! \return true if the list is not-empty and the reference has been assigned
     bool back(T& ref) const {
-      if (tail) {
-        ref = tail->data;
+      if (auto sp = tail.lock()) {
+        ref = sp->data;
         return true;
       }
       return false;
@@ -161,12 +149,12 @@ namespace yall {
         auto ptr = head->next;
         while (ptr) {
           if (ptr->data == match_val) {
-            if (ptr == tail) {
+            if (ptr == tail.lock()) {
               pop_back();
               return true;
             }
             //
-            auto prev_node = ptr->prev;
+            auto prev_node = ptr->prev.lock();
             auto next_node = ptr->next;
             ptr.reset();
             prev_node->next = next_node;
@@ -183,26 +171,26 @@ namespace yall {
     //! \param match_val
     //! \return true if the value was found and removed, otherwise false
     bool remove_last(const T& match_val) {
-      if (tail) {
-        if (tail->data == match_val) {
+      if (auto sp = tail.lock()) {
+        if (sp->data == match_val) {
           pop_back();
           return true;
         }
-        auto ptr = tail->prev;
-        while (ptr) {
-          if (ptr->data == match_val) {
-            if (ptr == head) {
+        auto ptr = sp->prev;
+        while ((sp = ptr.lock())) {
+          if (sp->data == match_val) {
+            if (sp == head) {
               pop_front();
               return true;
             }
-            auto prev_node = ptr->prev;
-            auto next_node = ptr->next;
-            ptr.reset();
+            auto prev_node = sp->prev.lock();
+            auto next_node = sp->next;
+            sp.reset();
             prev_node->next = next_node;
             next_node->prev = prev_node;
             return true;
           }
-          ptr = ptr->prev;
+          ptr = sp->prev;
         }
       }
       return false;
@@ -224,23 +212,23 @@ namespace yall {
 
     //! Free all nodes (create an empty list).
     void reset() noexcept {
-      auto ptr = head;
+      auto ptr = tail.lock();
       while (ptr) {
-        if (ptr->prev) {
-          ptr->prev.reset();
+        if (ptr->next) {
+          ptr->next.reset();
         }
-        ptr = ptr->next;
+        ptr = ptr->prev.lock();
       }
       head.reset();
       tail.reset();
     }
 
     //! \return whether the linked list is empty
-    bool empty() const { return !(head && tail); }
+    bool empty() const { return !(head || tail.lock()); }
 
   private:
     NodePtr head;
-    NodePtr tail;
+    std::weak_ptr<Node> tail;
   };
 }// namespace yall
 

@@ -44,7 +44,7 @@ namespace yall {
       if (head) {
         node_ptr->next = head;
         head->prev     = node_ptr;
-        head = node_ptr;
+        head           = node_ptr;
       } else {
         head = node_ptr;
         tail = node_ptr;
@@ -58,7 +58,7 @@ namespace yall {
       if (auto old_tail = tail.lock()) {
         node_ptr->prev = old_tail;
         old_tail->next = node_ptr;
-        tail = node_ptr;
+        tail           = node_ptr;
       } else {
         head = node_ptr;
         tail = node_ptr;

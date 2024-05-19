@@ -244,3 +244,64 @@ TEST(YallTest, FrontBack) {
   EXPECT_EQ(obj4.get(), obj1.get());
   ll_nc.pop_back();
 }
+
+TEST(ConstIterTest, Empty) {
+  yall::Yall<unsigned int&> u_list;
+
+  EXPECT_EQ(u_list.cbegin(), u_list.cend());
+  EXPECT_EQ(u_list.crbegin(), u_list.crend());
+}
+
+TEST(ConstIterTest, FwdRev) {
+  constexpr size_t sz = 101;
+  unsigned int test_arr[sz];
+
+  std::iota(test_arr, test_arr + sz, 0);
+
+  yall::Yall<unsigned int&> u_list;
+
+  for (auto& val: test_arr) {
+    u_list.push_front(val);
+  }
+
+  size_t indx = 0;
+  for (auto it = u_list.crbegin(); it != u_list.crend(); ++it, ++indx) {
+    EXPECT_EQ(*it, test_arr[indx]);
+  }
+
+  u_list.reset();
+  for (auto& val: test_arr) {
+    u_list.push_back(val);
+  }
+  indx = 0;
+  for (auto it = u_list.cbegin(); it != u_list.cend(); ++it, ++indx) {
+    EXPECT_EQ(*it, test_arr[indx]);
+  }
+}
+
+TEST(ConstIterTest, PostFwdRev) {
+  constexpr size_t sz = 101;
+  unsigned int test_arr[sz];
+
+  std::iota(test_arr, test_arr + sz, 0);
+
+  yall::Yall<unsigned int&> u_list;
+
+  for (auto& val: test_arr) {
+    u_list.push_front(val);
+  }
+
+  size_t indx = 0;
+  for (auto it = u_list.crbegin(); it != u_list.crend(); it++, ++indx) {
+    EXPECT_EQ(*it, test_arr[indx]);
+  }
+
+  u_list.reset();
+  for (auto& val: test_arr) {
+    u_list.push_back(val);
+  }
+  indx = 0;
+  for (auto it = u_list.cbegin(); it != u_list.cend(); it++, ++indx) {
+    EXPECT_EQ(*it, test_arr[indx]);
+  }
+}

@@ -194,12 +194,14 @@ TEST(YallTest, SingleVal) {
   ref_list.push_front(test_val);
   ASSERT_EQ(ref_list.front_val(), test_val);
   ASSERT_EQ(ref_list.back_val(), test_val);
+  ASSERT_EQ(ref_list.size(), 1);
 
   yall::Yall<float> val_list;
 
   val_list.push_back(test_val);
   ASSERT_EQ(val_list.front_val(), test_val);
   ASSERT_EQ(val_list.back_val(), test_val);
+  ASSERT_EQ(val_list.size(), 1);
 
   test_val = 13.0f;
   ASSERT_EQ(ref_list.front_val(), test_val);

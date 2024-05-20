@@ -11,5 +11,8 @@ int main() {
   fn_b<Foo>(ll_foo);
   ll_foo.print(foo_printer);
 
+  for (const auto& f : ll_foo) {
+    std::cout << "\t" << f << '\n';
+  }
   return 0;
 }

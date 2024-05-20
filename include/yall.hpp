@@ -226,6 +226,16 @@ namespace yall {
     //! \return whether the linked list is empty
     bool empty() const { return !(head || tail.lock()); }
 
+    size_t size() const {
+      size_t sz = 0;
+      auto ptr = head;
+      while (ptr) {
+        ++sz;
+        ptr = ptr->next;
+      }
+      return sz;
+    }
+
   private:
     NodePtr head;
     std::weak_ptr<Node> tail;
@@ -281,6 +291,9 @@ namespace yall {
 
     ConstIterator cbegin() { return ConstIterator(head); }
     ConstIterator cend() { return ConstIterator(); }
+    // allows range-based for loops with Yall containers
+    ConstIterator begin() { return cbegin(); }
+    ConstIterator end() { return cend(); }
 
     ConstIterator crbegin() { return ConstIterator(tail); }
     ConstIterator crend() { return ConstIterator(); }

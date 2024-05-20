@@ -384,6 +384,7 @@ TEST(ConstIterTest, NoCopy) {
   ll_nc.pop_back();
   EXPECT_TRUE(ll_nc.empty());
 }
+
 TEST(ConstIterTest, NoCopyRanges) {
   std::array<int, 4> arr = {2, 3, 4, 5};
   NoCopy obj0(arr[0]);

@@ -21,18 +21,20 @@ namespace yall {
   }
 
   struct Foo {
-    explicit Foo(std::string nm="foo", int id_=42) : name(std::move(nm)), id(id_) {}
+    explicit Foo(std::string nm = "foo", int id_ = 42)
+        : name(std::move(nm)), id(id_) {}
     std::string name;
     int id;
+
+    bool operator<(Foo const &rhs) const { return id < rhs.id; }
   };
+
 
   std::ostream& operator<<(std::ostream& os, const Foo& p) {
     return os << "name: \"" << p.name << "\", id: " << p.id;
   }
 
-  auto foo_printer = [](const yall::Foo& foo) {
-    std::cout << foo << " <--> ";
-  };
+  auto foo_printer = [](const yall::Foo& foo) { std::cout << foo << " <--> "; };
 
   template<typename T>
   void fn_b(Yall<T>& llist) {
@@ -42,5 +44,5 @@ namespace yall {
     llist.push_front(foo1);
     llist.push_back(foo2);
   }
-}
+}// namespace yall
 #endif//YALL_APPS_APPS_HPP

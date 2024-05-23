@@ -226,9 +226,77 @@ namespace yall {
     //! \return whether the linked list is empty
     bool empty() const { return !(head || tail.lock()); }
 
+    size_t size() const {
+      size_t sz = 0;
+      auto ptr = head;
+      while (ptr) {
+        ++sz;
+        ptr = ptr->next;
+      }
+      return sz;
+    }
+
   private:
     NodePtr head;
     std::weak_ptr<Node> tail;
+
+  public:
+    struct ConstIterator {
+      // iterator traits
+      using iterator_category = std::bidirectional_iterator_tag;
+      using difference_type   = std::ptrdiff_t;// TODO is this correct?
+      using value_type        = DecayT;
+      using pointer           = NodePtr;
+      using reference         = const DecayT&;
+
+      explicit ConstIterator() : m_ptr(nullptr) {}
+      explicit ConstIterator(pointer ptr) : m_ptr(ptr) {}
+      explicit ConstIterator(std::weak_ptr<Node> ptr) : m_ptr(ptr.lock()) {}
+
+      reference operator*() const { return m_ptr->data; }
+      pointer operator->() { return m_ptr; }
+
+      ConstIterator& operator++() {
+        m_ptr = m_ptr->next;
+        return *this;
+      }
+
+      ConstIterator operator++(int) {
+        ConstIterator tmp = *this;
+        ++(*this);
+        return tmp;
+      }
+
+      ConstIterator& operator--() {
+        m_ptr = m_ptr->prev.lock();
+        return *this;
+      }
+
+      ConstIterator operator--(int) {
+        ConstIterator tmp = *this;
+        --(*this);
+        return tmp;
+      }
+
+      friend bool operator==(const ConstIterator& a, const ConstIterator& b) {
+        return a.m_ptr == b.m_ptr;
+      };
+      friend bool operator!=(const ConstIterator& a, const ConstIterator& b) {
+        return a.m_ptr != b.m_ptr;
+      };
+
+    private:
+      pointer m_ptr;
+    };
+
+    ConstIterator cbegin() { return ConstIterator(head); }
+    ConstIterator cend() { return ConstIterator(); }
+    // allows range-based for loops with Yall containers
+    ConstIterator begin() { return cbegin(); }
+    ConstIterator end() { return cend(); }
+
+    ConstIterator crbegin() { return ConstIterator(tail); }
+    ConstIterator crend() { return ConstIterator(); }
   };
 }// namespace yall
 

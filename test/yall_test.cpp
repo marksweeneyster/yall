@@ -11,6 +11,10 @@ namespace {
   public:
     explicit Clazz(int n) : data(n) {}
     int get() const { return data; }
+
+    bool operator==(Clazz const& other) const {
+      return this->data == other.data;
+    }
   };
 
   class NoCopy {
@@ -267,6 +271,114 @@ TEST(YallTest, FrontBack) {
   EXPECT_TRUE(ll_clazz.back(obj4));
   EXPECT_EQ(obj4.get(), obj1.get());
   ll_clazz.pop_back();
+}
+
+TEST(YallTest, Insert) {
+  Clazz obj0(0);
+  Clazz obj1(1);
+  Clazz obj2(2);
+  Clazz obj3(3);
+  Clazz obj4(4);
+  Clazz obj5(5);
+  Clazz obj6(6);
+  Clazz obj7(7);// the null test
+
+  yall::Yall<Clazz&> ll_clazz;
+  ll_clazz.push_back(obj1);
+  ll_clazz.push_back(obj2);
+  ll_clazz.push_back(obj5);
+
+  EXPECT_TRUE(ll_clazz.insert_before(obj1, obj0));
+  EXPECT_TRUE(ll_clazz.insert_after(obj2, obj3));
+  EXPECT_TRUE(ll_clazz.insert_before(obj5, obj4));
+  EXPECT_TRUE(ll_clazz.insert_after(obj5, obj6));
+
+  Clazz obj_front(99);
+
+  EXPECT_FALSE(ll_clazz.insert_after(obj7, obj_front));
+  EXPECT_FALSE(ll_clazz.insert_before(obj7, obj_front));
+
+  EXPECT_TRUE(ll_clazz.front(obj_front));
+  EXPECT_EQ(obj_front.get(), obj0.get());
+  ll_clazz.pop_front();
+
+  EXPECT_TRUE(ll_clazz.front(obj_front));
+  EXPECT_EQ(obj_front.get(), obj1.get());
+  ll_clazz.pop_front();
+
+  EXPECT_TRUE(ll_clazz.front(obj_front));
+  EXPECT_EQ(obj_front.get(), obj2.get());
+  ll_clazz.pop_front();
+
+  EXPECT_TRUE(ll_clazz.front(obj_front));
+  EXPECT_EQ(obj_front.get(), obj3.get());
+  ll_clazz.pop_front();
+
+  EXPECT_TRUE(ll_clazz.front(obj_front));
+  EXPECT_EQ(obj_front.get(), obj4.get());
+  ll_clazz.pop_front();
+
+  EXPECT_TRUE(ll_clazz.front(obj_front));
+  EXPECT_EQ(obj_front.get(), obj5.get());
+  ll_clazz.pop_front();
+
+  EXPECT_TRUE(ll_clazz.front(obj_front));
+  EXPECT_EQ(obj_front.get(), obj6.get());
+  ll_clazz.pop_front();
+
+  EXPECT_TRUE(ll_clazz.empty());
+}
+
+TEST(YallTest, InsertAt) {
+  Clazz obj0(0);
+  Clazz obj1(1);
+  Clazz obj2(2);
+  Clazz obj3(3);
+  Clazz obj4(4);
+  Clazz obj5(5);
+  Clazz obj6(6);
+
+  yall::Yall<Clazz&> ll_clazz;
+
+  ll_clazz.insert_at(7, obj3);// push_front/back (list was empty)
+  ll_clazz.insert_at(0, obj2);// push_front
+  ll_clazz.insert_at(0, obj0);// push_front
+  ll_clazz.insert_at(1, obj1);
+  ll_clazz.insert_at(99, obj6);// push_back
+  ll_clazz.insert_at(4, obj4);
+  ll_clazz.insert_at(5, obj5);
+
+  Clazz obj_front(99);
+
+  EXPECT_TRUE(ll_clazz.front(obj_front));
+  EXPECT_EQ(obj_front.get(), obj0.get());
+  ll_clazz.pop_front();
+
+  EXPECT_TRUE(ll_clazz.front(obj_front));
+  EXPECT_EQ(obj_front.get(), obj1.get());
+  ll_clazz.pop_front();
+
+  EXPECT_TRUE(ll_clazz.front(obj_front));
+  EXPECT_EQ(obj_front.get(), obj2.get());
+  ll_clazz.pop_front();
+
+  EXPECT_TRUE(ll_clazz.front(obj_front));
+  EXPECT_EQ(obj_front.get(), obj3.get());
+  ll_clazz.pop_front();
+
+  EXPECT_TRUE(ll_clazz.front(obj_front));
+  EXPECT_EQ(obj_front.get(), obj4.get());
+  ll_clazz.pop_front();
+
+  EXPECT_TRUE(ll_clazz.front(obj_front));
+  EXPECT_EQ(obj_front.get(), obj5.get());
+  ll_clazz.pop_front();
+
+  EXPECT_TRUE(ll_clazz.front(obj_front));
+  EXPECT_EQ(obj_front.get(), obj6.get());
+  ll_clazz.pop_front();
+
+  EXPECT_TRUE(ll_clazz.empty());
 }
 
 TEST(ConstIterTest, Empty) {

@@ -14,10 +14,14 @@ namespace yall {
     double d1 = 3.14;
     double d2 = 2.7;
     double d3 = 42.0;
+    double d4 = 137.0;
+    double d5 = 13.0;
 
     llist.push_front(d1);
     llist.push_back(d2);
     llist.push_front(d3);
+    llist.insert_after(d3, d4);
+    llist.insert_at(2, d5);
   }
 
   struct Foo {
@@ -26,7 +30,10 @@ namespace yall {
     std::string name;
     int id;
 
-    bool operator<(Foo const &rhs) const { return id < rhs.id; }
+    bool operator<(Foo const& rhs) const { return id < rhs.id; }
+    bool operator==(Foo const& other) const {
+      return this->id == other.id && (this->name.compare(other.name) == 0);
+    }
   };
 
 
@@ -40,9 +47,11 @@ namespace yall {
   void fn_b(Yall<T>& llist) {
     yall::Foo foo1;
     yall::Foo foo2("goo", 7);
+    yall::Foo foo3("moo", 3);
 
     llist.push_front(foo1);
     llist.push_back(foo2);
+    llist.insert_before(foo2, foo3);
   }
 }// namespace yall
 #endif//YALL_APPS_APPS_HPP

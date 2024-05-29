@@ -196,6 +196,79 @@ namespace yall {
       return false;
     }
 
+    //! Look for first occurrence of the match value, insert new value before that
+    //! @param match_val
+    //! @param new_val
+    //! @return true if the new value has been inserted into the list
+    bool insert_before(const T& match_val, const T& new_val) {
+      if (head) {
+        if (head->data == match_val) {
+          push_front(new_val);
+          return true;
+        }
+        auto ptr = head->next;
+        while (ptr) {
+          if (ptr->data == match_val) {
+            auto node_ptr   = std::make_shared<Node>(new_val);
+            auto prev_node  = ptr->prev.lock();
+            prev_node->next = node_ptr;
+            node_ptr->prev  = prev_node;
+
+            node_ptr->next = ptr;
+            ptr->prev      = node_ptr;
+
+            return true;
+          }
+          ptr = ptr->next;
+        }
+      }
+      return false;
+    }
+
+    //! Look for first occurrence of the match value, insert new value after that
+    //! @param match_val
+    //! @param new_val
+    //! @return true if the new value has been inserted into the list
+    bool insert_after(const T& match_val, const T& new_val) {
+      auto ptr = head;
+      while (ptr) {
+        if (ptr->data == match_val) {
+          if (ptr == tail.lock()) {
+            push_back(new_val);
+            return true;
+          }
+          auto node_ptr   = std::make_shared<Node>(new_val);
+          node_ptr->next  = ptr->next;
+          ptr->next->prev = node_ptr;
+          node_ptr->prev  = ptr;
+
+          ptr->next = node_ptr;
+
+          return true;
+        }
+        ptr = ptr->next;
+      }
+      return false;
+    }
+
+    void insert_at(size_t indx, const T& new_val) {
+      if (indx == 0) {
+        push_front(new_val);
+        return;
+      }
+      size_t counter = 0;
+
+      auto ptr = head;
+      while (ptr) {
+        if (counter++ == indx) {
+          insert_before(ptr->data, new_val);
+          return;
+        }
+        ptr = ptr->next;
+      }
+      push_back(new_val);
+    }
+
     using PrinterCB = std::function<void(const T&)>;
 
     //! Print the values in the list, front-to-back.
@@ -228,7 +301,7 @@ namespace yall {
 
     size_t size() const {
       size_t sz = 0;
-      auto ptr = head;
+      auto ptr  = head;
       while (ptr) {
         ++sz;
         ptr = ptr->next;

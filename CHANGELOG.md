@@ -1,3 +1,7 @@
+# v0.4.0 (2024-05-29)
+- Added node insertion at arbitrary list positions 
+- Added GPL 3 license
+
 # v0.3.0 (2024-05-22)
 - Added iterators to Yall 
 - Added more unit tests

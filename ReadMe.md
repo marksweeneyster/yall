@@ -1,4 +1,7 @@
 # Project YALL
+This was sort of an interview question, I asked for clarification on the "reference to data" issue but didn't hear back.
+Anyway, my main goal was to not have an explicit `new` or `delete` in the code (and not leak). There's an obvious foot gun lying in wait if you use 
+a reference type for the container.
 
 ## problem statement
 ```
@@ -6,11 +9,7 @@ Create a C++ program that implements a linked list. The linked list should be
 a doubly linked list, allowing movement forward and backward. 
 - This program should allow you to add and remove nodes from the list. 
 - Each node should contain a reference to application data. 
-- The program does not have to provide user interaction. 
-- Please include unit tests for the program. 
 
-When completed, the program should be sent to your designated recruiter by 
-including a link to your solution in GitHub in an email.
 ```
 
 ## building
